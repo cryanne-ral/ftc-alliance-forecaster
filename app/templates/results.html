@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <h2>Best partners for team {{ result.captain }}</h2>
+  <p class="hint">
+    Event <strong>{{ result.event_code }}</strong>.
+    Captain OPR {{ result.captain_opr }}.
+    {{ result.n_candidates }} candidate partner(s) considered
+    {% if result.available_only %}(restricted to teams seeded below the captain){% else %}(all teams at the event){% endif %}.
+  </p>
+
+  <table class="results">
+    <thead>
+      <tr>
+        <th>#</th><th>Team</th><th>Win prob vs field</th><th>Partner OPR</th>
+        <th>Combined OPR</th><th>Qual rank</th><th>Capabilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in result.recommendations %}
+      <tr {% if loop.first %}class="top"{% endif %}>
+        <td>{{ r.rank }}</td>
+        <td class="team">{{ r.candidate }}</td>
+        <td>
+          <div class="bar-wrap" title="{{ r.win_prob_vs_field }}">
+            <div class="bar" style="width: {{ (r.win_prob_vs_field * 100) | round(0, 'floor') }}%"></div>
+            <span>{{ '%.0f' % (r.win_prob_vs_field * 100) }}%</span>
+          </div>
+        </td>
+        <td>{{ r.partner_opr }}</td>
+        <td>{{ r.combined_opr }}</td>
+        <td>{{ r.qual_rank if r.qual_rank is not none else '?' }}</td>
+        <td class="flags">
+          {% if r.color_sorter %}<span class="flag">sorter</span>{% endif %}
+          {% if r.base %}<span class="flag">base</span>{% endif %}
+          {% if r.strong_auto %}<span class="flag">auto</span>{% endif %}
+          {% if r.clean %}<span class="flag">clean</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p class="caveat">
+    Win probability is measured against a typical alliance at this event, not against
+    a specific opponent. Playoffs are single elimination and high variance, so treat
+    this as a ranking aid rather than a guarantee.
+  </p>
+
+  <p><a class="back" href="{{ url_for('index') }}">Scout another event</a></p>
+</section>
+{% endblock %}

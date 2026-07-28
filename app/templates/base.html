@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}FTC Alliance Forecaster{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1><a href="{{ url_for('index') }}">FTC Alliance Forecaster</a></h1>
+      <p class="sub">Pick the partner most likely to win the playoffs</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>
+        Capstone project, DATA 975. Data courtesy of FTCScout and FIRST Tech Challenge.
+        {% if meta %}
+          Model trained on season {{ meta.get('season', 'n/a') }},
+          region {{ meta.get('region', 'n/a') }}.
+        {% endif %}
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

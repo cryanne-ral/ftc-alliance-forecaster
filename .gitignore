@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Notebook noise
+.ipynb_checkpoints/
+
+# Raw + intermediate data (regenerable from the API cache; keep the repo small)
+data/raw/
+data/interim/
+data/processed/
+
+# Secrets. NEVER commit an API key.
+.env
+*.key
+secrets.json
+
+# OS
+.DS_Store
+Thumbs.db

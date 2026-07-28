@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="card">
+  <h2>Scout an event</h2>
+  <p class="hint">
+    Choose the event and the captain team. The model ranks every available partner
+    by the probability that the resulting alliance beats a typical alliance at that event.
+  </p>
+
+  <form action="{{ url_for('recommend') }}" method="post" class="form">
+    <div class="field">
+      <label for="event">Event</label>
+      <select name="event" id="event" required>
+        <option value="" disabled selected>Choose an event...</option>
+        {% for e in events %}
+          <option value="{{ e }}">{{ e }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="captain">Captain team number</label>
+      <select name="captain" id="captain">
+        <option value="">Top qualification seed</option>
+      </select>
+      <span class="hint small">Leave as the top seed, or pick a team after choosing an event.</span>
+    </div>
+
+    <div class="field checkbox">
+      <label>
+        <input type="checkbox" name="available_only" checked>
+        Only show teams the captain could actually pick (seeded below the captain)
+      </label>
+    </div>
+
+    <button type="submit">Recommend partners</button>
+  </form>
+</section>
+
+{% if meta %}
+<section class="card muted">
+  <h3>About this model</h3>
+  <ul class="meta-list">
+    <li><strong>Season:</strong> {{ meta.get('season', 'n/a') }}</li>
+    <li><strong>Region:</strong> {{ meta.get('region', 'n/a') }}</li>
+    <li><strong>Model:</strong> {{ meta.get('model_name', 'n/a') }}</li>
+    <li><strong>Training examples:</strong> {{ meta.get('n_training_examples', 'n/a') }}</li>
+    {% if meta.get('metrics') %}
+      <li><strong>Held-out metrics:</strong>
+        {% for k, v in meta.get('metrics').items() %}{{ k }}={{ v }}{% if not loop.last %}, {% endif %}{% endfor %}
+      </li>
+    {% endif %}
+  </ul>
+  {% if meta.get('caveat') %}<p class="caveat">{{ meta.get('caveat') }}</p>{% endif %}
+</section>
+{% endif %}
+
+<script>
+// Fill the captain dropdown from /teams once an event is chosen.
+document.getElementById("event").addEventListener("change", async (ev) => {
+  const sel = document.getElementById("captain");
+  sel.innerHTML = '<option value="">Loading...</option>';
+  try {
+    const res = await fetch(`/teams?event=${encodeURIComponent(ev.target.value)}`);
+    const data = await res.json();
+    sel.innerHTML = '<option value="">Top qualification seed</option>';
+    (data.teams || []).forEach(t => {
+      const o = document.createElement("option");
+      o.value = t.team;
+      const rank = (t.qual_rank === null || t.qual_rank === undefined) ? "?" : t.qual_rank;
+      o.textContent = `${t.team} (rank ${rank})`;
+      sel.appendChild(o);
+    });
+  } catch (e) {
+    sel.innerHTML = '<option value="">Could not load teams</option>';
+  }
+});
+</script>
+{% endblock %}
