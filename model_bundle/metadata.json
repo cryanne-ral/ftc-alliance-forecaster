@@ -1,7 +1,7 @@
 {
- "created": "2026-07-24",
+ "created": "2026-07-28",
  "season": 2025,
- "region": "USNJ (SYNTHETIC DEMO)",
+ "region": "USNJ",
  "model_name": "CalibratedClassifierCV",
  "primary_component": "totalPointsNp",
  "base_feature_columns": [
@@ -30,15 +30,27 @@
   "clean_robot",
   "avg_true_auto_leave",
   "avg_true_dc_base",
-  "event_type_League",
+  "event_type_Championship",
+  "event_type_FIRSTChampionship",
+  "event_type_LeagueMeet",
+  "event_type_LeagueTournament",
+  "event_type_Scrimmage",
+  "region_CMPZ2",
   "region_USNJ",
-  "state_NJ"
+  "region_USTXHO",
+  "state_NJ",
+  "state_TX"
  ],
- "n_training_examples": 180,
- "n_events": 3,
+ "n_training_examples": 75,
+ "n_events": 14,
  "metrics": {
-  "note": "synthetic demo data, metrics not meaningful"
+  "accuracy": 0.618,
+  "log_loss": 0.601,
+  "brier": 0.21,
+  "roc_auc": 0.75,
+  "n_test": 34
  },
- "sklearn_version": "1.8.0",
- "caveat": "DEMO BUNDLE built from synthetic data so the app can be tested. Replace with the real bundle exported from the notebook."
+ "sklearn_version": "1.6.1",
+ "python_version": "3.12.13",
+ "caveat": "Trained on a small sample of playoff matches. Win probability is measured against a typical alliance at the same event, not a specific opponent. Use as a ranking aid, not a guarantee."
 }
